@@ -1,0 +1,18 @@
+Stworz aplikacje klinika weterynaryjna.
+
+Encje:
+Patients -  id, imie, nazwisko, telefon, email, adres (ofc po ang)
+Veterinarians – id, imie, nazwisko, specjalizacja, email, telefon
+Animals – id, imie, gatunek, rasa, wiek, id_pacjenta
+Appointments –  id, id_zwierzecia, id_weterynarza, data, opis, status
+
+Stwórz REST API z endpointami do:
+Pobierania (GET)
+Tworzenia (POST)
+Aktualizacji (PUT)
+dla każdego z zasobów: pacjenci, weterynarze, zwierzęta, wizyty. - Na ten moment tylko GET
+
+Fajnie jakbys walidowal dane na wejsciu, np. imie nie moze byc puste.
+Dodatkowo obsluzone n+1.
+Dorzuc metody do sortowania i filtrowania np. po imie oraz nazwisko.
+Zrób pobieranie jednego z zasobów rowniez w XML(tak zeby przecwiczyc) - reszta wystarczy w JSON :)
