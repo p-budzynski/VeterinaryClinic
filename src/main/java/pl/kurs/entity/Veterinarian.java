@@ -17,7 +17,6 @@ import lombok.ToString;
 public class Veterinarian {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
     @Column(name = "first_name", nullable = false)
@@ -30,11 +29,11 @@ public class Veterinarian {
     @JoinColumn(name = "specialization_id", nullable = false)
     private Specialization specialization;
 
-    @Column(name = "e_mail", nullable = false, unique = true)
+    @Column(name = "e_mail", unique = true)
     @Email
     private String email;
 
-    @Column(name = "phone_number", nullable = false, unique = true)
+    @Column(name = "phone_number", unique = true)
     @Pattern(regexp = "\\d{9}")
     private String phoneNumber;
 

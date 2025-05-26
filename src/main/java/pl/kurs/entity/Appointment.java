@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
     @ManyToOne
@@ -28,10 +27,10 @@ public class Appointment {
     @JoinColumn(name = "veterinarian_id", nullable = false)
     private Veterinarian veterinarian;
 
-    @Column(name = "date", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime date;
 
-    @Column(name = "description", nullable = false, length = 1000)
+    @Column(length = 1000)
     private String description;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

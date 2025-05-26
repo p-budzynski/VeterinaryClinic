@@ -17,19 +17,15 @@ import lombok.ToString;
 public class Animal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "species", nullable = false)
     private String species;
 
-    @Column(name = "breed", nullable = false)
     private String breed;
 
-    @Column(name = "age")
     @Min(0)
     @Max(100)
     private Integer age;

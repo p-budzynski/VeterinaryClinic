@@ -19,7 +19,6 @@ import java.util.List;
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
     @Column(name = "first_name", nullable = false)
@@ -28,15 +27,15 @@ public class Patient {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "phone_number", nullable = false, unique = true)
+    @Column(name = "phone_number", unique = true)
     @Pattern(regexp = "\\d{9}")
     private String phoneNumber;
 
-    @Column(name = "e_mail", nullable = false, unique = true)
+    @Column(name = "e_mail", unique = true)
     @Email
     private String email;
 
-    @Column(name = "address", nullable = false, length = 1000)
+    @Column(length = 1000)
     private String address;
 
     @OneToMany(mappedBy = "patient", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

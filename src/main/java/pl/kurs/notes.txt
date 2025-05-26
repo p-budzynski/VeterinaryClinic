@@ -10,9 +10,15 @@ Stwórz REST API z endpointami do:
 Pobierania (GET)
 Tworzenia (POST)
 Aktualizacji (PUT)
-dla każdego z zasobów: pacjenci, weterynarze, zwierzęta, wizyty. - Na ten moment tylko GET
+dla każdego z zasobów: pacjenci, weterynarze, zwierzęta, wizyty.
 
 Fajnie jakbys walidowal dane na wejsciu, np. imie nie moze byc puste.
 Dodatkowo obsluzone n+1.
 Dorzuc metody do sortowania i filtrowania np. po imie oraz nazwisko.
 Zrób pobieranie jednego z zasobów rowniez w XML(tak zeby przecwiczyc) - reszta wystarczy w JSON :)
+
+Obsługa wyjątkow - Global Handler - tj. uzytkownik podal puste id, albo id nie istnieje w bazie - odpowiednie response body oraz statusy
+Sprobuj napisac aspekt ktory zostanie odpalony przed uruchomieniem funkcji w pakiecie .service - ma w nim sie znajdowac sout - w ktorym bedzie podana nazwa funkcji oraz jej argumenty
+Oraz aspekt po zakonczeniu funkcji w pakiecie .service, ktory po prostu poinformuje ze funkcja sie zakonczyla.
+
+Wczytanie pliku poprzez controller(Multipart, czyli np. stworz sobie csv w ktorym bedzie prosta konstrukcja - imie i nazwisko i zapisz to do tabeli
