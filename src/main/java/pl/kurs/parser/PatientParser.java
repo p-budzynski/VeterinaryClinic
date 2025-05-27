@@ -4,14 +4,12 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.kurs.dto.PatientDto;
-import pl.kurs.entity.Patient;
-import pl.kurs.mapper.PatientMapper;
+import pl.kurs.exception.CsvValidationException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,10 +23,10 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class PatientParser {
     private final Validator validator;
-    private final PatientMapper patientMapper;
 
-    public List<Patient> parseCsv(MultipartFile file) throws IOException {
+    public List<PatientDto> parseCsv(MultipartFile file) throws IOException {
         List<PatientDto> patientDtos = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
 
         try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             HeaderColumnNameMappingStrategy<PatientDto> strategy = new HeaderColumnNameMappingStrategy<>();
@@ -41,18 +39,26 @@ public class PatientParser {
                     .withThrowExceptions(false)
                     .build();
 
+            int rowNumber = 1;
             for (PatientDto csvLine : csvToBean) {
                 Set<ConstraintViolation<PatientDto>> violations = validator.validate(csvLine);
 
                 if (!violations.isEmpty()) {
-                    throw new ConstraintViolationException("Validation failed for CSV row: " + csvLine, violations);
+                    for (ConstraintViolation<PatientDto> violation : violations) {
+                        errors.add("Row " + rowNumber + ": " +
+                                   violation.getPropertyPath() + " - " + violation.getMessage());
+                    }
+                } else {
+                    patientDtos.add(csvLine);
                 }
-
-                patientDtos.add(csvLine);
+                rowNumber++;
             }
         }
+        if (!errors.isEmpty()) {
+            throw new CsvValidationException("CSV validation failed:\n" + String.join("\n", errors));
+        }
 
-        return patientMapper.dtosToEntities(patientDtos);
+        return patientDtos;
     }
 
 }

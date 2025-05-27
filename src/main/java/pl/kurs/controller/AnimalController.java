@@ -1,6 +1,5 @@
 package pl.kurs.controller;
 
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

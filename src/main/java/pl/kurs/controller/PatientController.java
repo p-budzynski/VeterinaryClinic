@@ -1,10 +1,12 @@
 package pl.kurs.controller;
 
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.kurs.dto.PatientDto;
@@ -13,6 +15,8 @@ import pl.kurs.entity.Patient;
 import pl.kurs.mapper.PatientMapper;
 import pl.kurs.parser.PatientParser;
 import pl.kurs.service.PatientService;
+import pl.kurs.validation.Create;
+import pl.kurs.validation.Update;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,7 +31,7 @@ public class PatientController {
     private PatientParser patientParser;
 
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<PatientDto> getById(@PathVariable("id") Long id) {
+    public ResponseEntity<PatientDto> getById(@PathVariable("id") @Min(1) Long id) {
         Optional<Patient> patient = patientService.getPatientById(id);
         return patient.map(p -> ResponseEntity.ok(patientMapper.entityToDto(p)))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -68,7 +72,7 @@ public class PatientController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PatientDto createPatient(@RequestBody PatientDto patientDto) {
+    public PatientDto createPatient(@RequestBody @Validated(Create.class) PatientDto patientDto) {
         Patient patient = patientMapper.dtoToEntity(patientDto);
         Patient savedPatient = patientService.savePatient(patient);
         return patientMapper.entityToDto(savedPatient);
@@ -76,19 +80,20 @@ public class PatientController {
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void uploadPatients(@RequestPart("file") MultipartFile file) throws IOException {
-        List<Patient> patients = patientParser.parseCsv(file);
+        List<PatientDto> patientsDtos = patientParser.parseCsv(file);
+        List<Patient> patients = patientMapper.dtosToEntities(patientsDtos);
         patientService.uploadPatients(patients);
     }
 
     @PutMapping
-    public PatientDto updatePatient(@RequestBody PatientDto patientDto) {
+    public PatientDto updatePatient(@RequestBody @Validated(Update.class) PatientDto patientDto) {
         Patient patient = patientMapper.dtoToEntity(patientDto);
         Patient updatedPatient = patientService.updatePatient(patient);
         return patientMapper.entityToDto(updatedPatient);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable("id") Long id) {
+    public void deleteById(@PathVariable("id") @Min(1) Long id) {
         patientService.deletePatientById(id);
     }
 

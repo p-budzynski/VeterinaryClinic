@@ -1,6 +1,5 @@
 package pl.kurs.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
@@ -39,7 +38,6 @@ public class Patient {
     private String address;
 
     @OneToMany(mappedBy = "patient", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JsonBackReference
     private List<Animal> animals = new ArrayList<>();
 
     public Patient(String firstName, String lastName, String phoneNumber, String email, String address) {

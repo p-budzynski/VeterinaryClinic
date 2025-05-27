@@ -1,15 +1,19 @@
 package pl.kurs.controller;
 
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.kurs.dto.AppointmentDto;
 import pl.kurs.dto.AppointmentDtoList;
 import pl.kurs.entity.Appointment;
 import pl.kurs.mapper.AppointmentMapper;
 import pl.kurs.service.AppointmentService;
+import pl.kurs.validation.Create;
+import pl.kurs.validation.Update;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +26,7 @@ public class AppointmentController {
     private AppointmentMapper appointmentMapper;
 
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<AppointmentDto> getById(@PathVariable("id") Long id) {
+    public ResponseEntity<AppointmentDto> getById(@PathVariable("id") @Min(1) Long id) {
         Optional<Appointment> appointment = appointmentService.getAppointmentById(id);
         return appointment.map(a -> ResponseEntity.ok(appointmentMapper.entityToDto(a)))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -43,21 +47,21 @@ public class AppointmentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AppointmentDto createAppointment(@RequestBody AppointmentDto appointmentDto) {
+    public AppointmentDto createAppointment(@RequestBody @Validated(Create.class) AppointmentDto appointmentDto) {
         Appointment appointment = appointmentMapper.dtoToEntity(appointmentDto);
         Appointment savedAppointment = appointmentService.saveAppointment(appointment);
         return appointmentMapper.entityToDto(savedAppointment);
     }
 
     @PutMapping
-    public AppointmentDto updateAppointment(@RequestBody AppointmentDto appointmentDto) {
+    public AppointmentDto updateAppointment(@RequestBody @Validated(Update.class) AppointmentDto appointmentDto) {
         Appointment appointment = appointmentMapper.dtoToEntityWithId(appointmentDto);
         Appointment updatedAppointment = appointmentService.updateAppointment(appointment);
         return appointmentMapper.entityToDto(updatedAppointment);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable("id") Long id) {
+    public void deleteById(@PathVariable("id") @Min(1) Long id) {
         appointmentService.deleteAppointmentById(id);
     }
 }
