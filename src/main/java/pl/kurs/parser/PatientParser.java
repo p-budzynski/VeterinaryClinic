@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.kurs.dto.PatientDto;
 import pl.kurs.exception.CsvValidationException;
+import pl.kurs.validation.Create;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,12 +42,11 @@ public class PatientParser {
 
             int rowNumber = 1;
             for (PatientDto csvLine : csvToBean) {
-                Set<ConstraintViolation<PatientDto>> violations = validator.validate(csvLine);
+                Set<ConstraintViolation<PatientDto>> violations = validator.validate(csvLine, Create.class);
 
                 if (!violations.isEmpty()) {
                     for (ConstraintViolation<PatientDto> violation : violations) {
-                        errors.add("Row " + rowNumber + ": " +
-                                   violation.getPropertyPath() + " - " + violation.getMessage());
+                        errors.add("Row " + rowNumber + ": " + violation.getMessage());
                     }
                 } else {
                     patientDtos.add(csvLine);
@@ -55,7 +55,7 @@ public class PatientParser {
             }
         }
         if (!errors.isEmpty()) {
-            throw new CsvValidationException("CSV validation failed:\n" + String.join("\n", errors));
+            throw new CsvValidationException("CSV validation failed. " + errors);
         }
 
         return patientDtos;
