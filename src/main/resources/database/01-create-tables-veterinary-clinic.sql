@@ -39,9 +39,11 @@ CREATE TABLE animals (
     species VARCHAR(255),
     breed VARCHAR(255),
     age INTEGER CHECK (age >= 0 AND age <= 100),
-    patient_id BIGINT NOT NULL,
+    patient_id BIGINT,
     CONSTRAINT fk_animals_patient
-        FOREIGN KEY (patient_id) REFERENCES patients(id)
+        FOREIGN KEY (patient_id)
+        REFERENCES patients(id)
+        ON DELETE SET NULL
 );
 
 CREATE TABLE appointments (

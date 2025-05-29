@@ -87,7 +87,7 @@ public class PatientController {
 
     @PutMapping
     public PatientDto updatePatient(@RequestBody @Validated(Update.class) PatientDto patientDto) {
-        Patient patient = patientMapper.dtoToEntity(patientDto);
+        Patient patient = patientMapper.dtoToEntityWithId(patientDto);
         Patient updatedPatient = patientService.updatePatient(patient);
         return patientMapper.entityToDto(updatedPatient);
     }

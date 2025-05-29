@@ -31,7 +31,7 @@ public class Animal {
     private Integer age;
 
     @ManyToOne
-    @JoinColumn(name = "patient_id", nullable = false)
+    @JoinColumn(name = "patient_id")
     private Patient patient;
 
     public Animal(String name, String species, String breed, Integer age, Patient patient) {
